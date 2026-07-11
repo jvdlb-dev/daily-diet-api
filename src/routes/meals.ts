@@ -38,7 +38,7 @@ export async function mealRoutes(app: FastifyInstance) {
     return { meals }
   })
 
-  app.get('/:id', async (request) => {
+  app.get('/:id', async (request, reply) => {
     const getMealParamsSchema = z.object({
       id: z.string().uuid(),
     })
@@ -51,6 +51,10 @@ export async function mealRoutes(app: FastifyInstance) {
         user_id: request.user!.id,
       })
       .first()
+
+    if (!meal) {
+      return reply.status(404).send({ message: 'Meal not found' })
+    }
 
     return { meal }
   })
